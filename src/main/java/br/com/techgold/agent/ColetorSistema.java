@@ -70,6 +70,10 @@ public class ColetorSistema {
 	                        return "All-in-One";
 	                    case 3:
 	                        return "Desktop";
+	                    case 23:
+	                        return "Servidor";
+	                    case 7:
+	                        return "Servidor";
 	                    default:
 	                        return "Outro (" + tipo + ")";
 	                }
@@ -113,7 +117,7 @@ public class ColetorSistema {
         if (arch == null || arch.isEmpty()) {
             arch = System.getenv("PROCESSOR_ARCHITECTURE");
         }
-        dados.osArchitecture = arch != null ? arch : "Unknown";
+        dados.osArchitecture = arch != null ? arch : "Desconhecido";
 
         // Timezone
         dados.timeZone = java.time.ZoneId.systemDefault().toString();
@@ -127,7 +131,7 @@ public class ColetorSistema {
         // Domínio
         dados.domain = getDomainName();
 
-        dados.deviceType = detectarTipoEquipamento(); // precisa criar esse campo em DadosComputador
+        dados.deviceType = detectarTipoEquipamento();
 
 
         // IPs (todas as interfaces válidas)
@@ -160,13 +164,14 @@ public class ColetorSistema {
         }
 
         // RAM total e disponível
-        dados.ram = String.format("%.2f GB", memory.getTotal() / 1e9);
-        dados.ramAvailable = String.format("%.2f GB", memory.getAvailable() / 1e9);
+        dados.ram = String.format("%.2f GB", memory.getTotal() /  1073741824.0);
+        dados.ramAvailable = String.format("%.2f GB", memory.getAvailable() /  1073741824.0);
+
 
         // Memória física por slot
         List<String> memSlots = new ArrayList<>();
         for (PhysicalMemory mem : memory.getPhysicalMemory()) {
-            memSlots.add(mem.getBankLabel() + ": " + String.format("%.2f GB", mem.getCapacity() / 1e9));
+            memSlots.add(mem.getBankLabel() + ": " + String.format("%.2f GB", mem.getCapacity() / 1073741824.0));
         }
         dados.memorySlots = memSlots;
 
@@ -260,16 +265,17 @@ public class ColetorSistema {
 
         // BIOS
         Firmware fw = system.getFirmware();
-        dados.biosVersion = fw.getVersion();
-        dados.biosVendor = fw.getManufacturer();
-        dados.biosReleaseDate = fw.getReleaseDate();
+        dados.biosVersion = fw.getVersion() != null ? fw.getVersion() : "Indisponível" ;
+        dados.biosVendor = fw.getManufacturer() != null ? fw.getManufacturer(): "Indisponível" ;
+        dados.biosReleaseDate = fw.getReleaseDate() != null ? fw.getReleaseDate() : "Indisponível";
+
 
 
         // Monitores
         dados.monitores = hal.getDisplays().size();
 
         // UUID do sistema
-        dados.uuid = system.getHardwareUUID();
+        dados.uuid = system.getHardwareUUID() != null ? system.getHardwareUUID() : "Indisponivel";
 
         // Detecta se é VM
         dados.isVirtualMachine = system.getModel().toLowerCase().contains("virtual") ||
@@ -291,7 +297,7 @@ public class ColetorSistema {
                 : System.getProperty("user.name");
 
         // Datas do agente
-        dados.agentInstallDate = LocalDateTime.now();
+        dados.agentInstallDate = LocalDateTime.now().withNano(0);
         dados.lastSeen = LocalDateTime.now();
         dados.status = "ONLINE";
         dados.type = "AGENT";

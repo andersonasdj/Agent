@@ -13,8 +13,6 @@ import br.com.techgold.agent.model.DadosComputador;
 
 public class ApiSender {
 
-    //private static final String BEARER_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ2VudC1zeXN0ZW0iLCJpYXQiOjE3NDk4Njk5ODEsImV4cCI6MjA2NTIyOTk4MX0.Exw8CXWs_HUrvcuCCmQ5qnXgaJX5SlBbRdkiLMTTgE4"; 
-
     public static void enviar(DadosComputador dados, String bearerToken) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -25,7 +23,7 @@ public class ApiSender {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("https://app.providerone.com.br/agent/api/v1/computadores"))
-//            		.uri(URI.create("http://192.168.0.136:8089/agent/api/v1/computadores"))
+//            		.uri(URI.create("http://192.168.122.183:8089/agent/api/v1/computadores"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + bearerToken)
                     .POST(HttpRequest.BodyPublishers.ofString(json))

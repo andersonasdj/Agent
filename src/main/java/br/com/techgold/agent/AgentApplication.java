@@ -23,7 +23,7 @@ public class AgentApplication {
             }
         };
 
-        // Executa a cada 10 minutos, com início imediato
+        // Executa a cada 2 minutos, com início imediato
         scheduler.scheduleAtFixedRate(tarefa, 0, 2, TimeUnit.MINUTES);
     }
 }
